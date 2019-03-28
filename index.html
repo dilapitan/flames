@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>FLAMES!</title>
+  <link rel="stylesheet" href="semantic/semantic.min.css" />
+  <script src="scripts/jquery-3.3.1.min.js"></script>
+  <script src="semantic/semantic.min.js"></script>
+  <script src="scripts/vue.min.js"></script>
+</head>
+
+<body>
+  <br><br>
+  <br><br>
+
+  <div class="ui grid">
+    <div class="centered row">
+      <h1 style="font-size: 8rem; color: #F27127;">FLAMES<i class="orange fire icon"></i></h1>
+    </div>
+
+    <div style="color: hsl(0, 0%, 45%);" class="centered row">
+      <h1 style="font-size: 2.6rem;">
+        <i>Find out the relationship between two people <i class="red heart icon"></i></i>
+      </h1>
+    </div>
+
+    <div style="color: hsl(0, 0%, 29%);" class="centered row">
+      <h1 style="font-size: 2.6rem;">
+        <i></i>
+      </h1>
+    </div>
+  </div>
+
+  <br><br>
+
+  <div id="app">
+
+    <form class="ui grid">
+
+      <!-- Name 1 container -->
+      <div class="right floated centered row">
+        <div class="two wide column"></div>
+
+        <!-- Name 1 input -->
+        <div class="eight wide column">
+          <div class="ui form" style="font-size: 2rem">
+            <div class="field">
+              <label>Name 1</label>
+              <input v-model="name1" type="text" placeholder="Example:   john doe">
+            </div>
+          </div>
+        </div>
+
+        <div class="two wide column"></div>
+      </div>
+
+      <br><br><br><br>
+      <br><br><br><br>
+
+      <!-- Name 2 container -->
+      <div class="right floated centered row">
+        <div class="two wide column"></div>
+
+        <!-- Name 2 input -->
+        <div class="eight wide column">
+          <div class="ui form" style="font-size: 2rem">
+            <div class="field">
+              <label>Name 2</label>
+              <input v-model="name2" type="text" placeholder="Example:   jane doe">
+            </div>
+          </div>
+        </div>
+
+        <div class="two wide column"></div>
+      </div>
+
+      <!-- Reveal button -->
+      <div class="centered row">
+        <button :class="{ disabled: has_error}" @click.prevent="get_relationship" class="massive ui red button">
+          <h1 style="font-size: 3rem;">{{ label }}!</h1>
+        </button>
+        <button v-if="done" @click.prevent="reloadPage" class="massive ui green button"><i
+            class="undo icon"></i></button>
+      </div>
+
+    </form>
+  </div>
+
+  <script>
+    let app = new Vue({
+      el: '#app',
+      data() {
+        return {
+          has_error: true,
+          name1: '',
+          name2: '',
+          label: 'REVEAL',
+          done: false
+        }
+      },
+      watch: {
+        /**
+         * Only enables the reveal button if the two fields are not empty
+        */
+
+        name1() {
+          if (this.name1.length && this.name2.length) this.has_error = false
+          else this.has_error = true
+        },
+
+        name2() {
+          if (this.name1.length && this.name2.length) this.has_error = false
+          else this.has_error = true
+        }
+      },
+      methods: {
+        /* Method for FLAMES */
+        get_relationship: function () {
+          let counter = 0
+          let counted_letters = []
+          const name1 = this.name1
+          const name2 = this.name2
+          const name1_length = name1.length
+          const name2_length = name2.length
+
+          for (i = 0; i < name1_length; i++) {
+            for (j = 0; j < name2_length; j++) {
+
+              if (!(counted_letters.includes(name1[i]))) {  // if letter of name1 is not yet counted
+                if (name1[i] == name2[j]) {                 // if letter of name1 is the same in name2
+                  counter++                                 // counts the same letter for both names
+                  counted_letters.push(name1[i])            // push the counted letter in the counted_letters array
+                }
+              }
+              else continue    // skip the same letter to be compared to name2
+            }
+          }
+
+          let answer = counter % 6 // get the proper answer in FLAMES
+          if (answer == 1) this.label = 'FRIENDS'            // F
+          else if (answer == 2) this.label = 'LOVERS'        // L
+          else if (answer == 3) this.label = 'ACQUAINTANCE'  // A
+          else if (answer == 4) this.label = 'MARRIAGE'      // M
+          else if (answer == 5) this.label = 'ENEMIES'       // E
+          else if (answer == 0) this.label = 'SOUL MATES'    // S
+
+          this.done = true
+        },
+
+        reloadPage: function () {
+          window.location.reload()
+        }
+
+
+      }
+    })
+  </script>
+
+</body>
+
+</html>
